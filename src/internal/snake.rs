@@ -91,23 +91,23 @@ impl Snake {
 
     pub fn draw(&self, d: &mut RaylibDrawHandle) {
         for (index, body_part) in self.body.clone().into_iter().enumerate() {
-            let rectangle = Rectangle::new(
-                body_part.x * CELL_SIZE as f32,
-                body_part.y * CELL_SIZE as f32,
-                8.0,
-                8.0,
-            );
             if index == 0 {
-                /*d.draw_texture(
+                d.draw_texture(
                     &self.texture,
                     body_part.x as i32 * (CELL_SIZE),
                     body_part.y as i32 * (CELL_SIZE),
                     Color::WHITE,
-                );*/
-                d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::ORANGE);
+                );
+                // d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::ORANGE);
 
                 continue;
             }
+            let rectangle = Rectangle::new(
+                body_part.x * CELL_SIZE as f32,
+                body_part.y * CELL_SIZE as f32,
+                16.0,
+                16.0,
+            );
             d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE);
         }
     }
