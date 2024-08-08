@@ -12,12 +12,12 @@ use raylib::{
 use super::config::{CELL_COUNT, CELL_SIZE};
 
 pub struct Food {
-    position: Vector2,
+    pub position: Vector2,
     texture: Texture2D,
 }
 
 impl Food {
-    fn generate_random_pos() -> Vector2 {
+    pub fn generate_random_pos() -> Vector2 {
         let x = unsafe { GetRandomValue(0, CELL_COUNT - 1) as f32 };
         let y = unsafe { GetRandomValue(0, CELL_COUNT - 1) as f32 };
         Vector2::new(x, y)

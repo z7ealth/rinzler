@@ -22,5 +22,12 @@ impl Game {
 
     pub fn update(&mut self) {
         self.snake.update();
+        self.check_snake_collision_with_food()
+    }
+
+    pub fn check_snake_collision_with_food(&mut self) {
+        if self.snake.body[0].eq(&self.food.position) {
+            self.food.position = Food::generate_random_pos();
+        }
     }
 }

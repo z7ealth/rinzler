@@ -19,7 +19,7 @@ fn main() {
 
     while !rl.window_should_close() {
         if game.snake.should_update() {
-            game.snake.update();
+            game.update();
         }
 
         game.snake.update_direction(&mut rl);
