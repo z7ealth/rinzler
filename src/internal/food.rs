@@ -4,6 +4,7 @@ use raylib::{
     color::Color,
     drawing::{RaylibDraw, RaylibDrawHandle},
     ffi::GetRandomValue,
+    math::Vector2,
     texture::{Image, Texture2D},
     RaylibHandle, RaylibThread,
 };
@@ -11,15 +12,15 @@ use raylib::{
 use super::config::{CELL_COUNT, CELL_SIZE};
 
 pub struct Food {
-    position: (i32, i32),
+    position: Vector2,
     texture: Texture2D,
 }
 
 impl Food {
-    fn generate_random_pos() -> (i32, i32) {
-        let x = unsafe { GetRandomValue(0, CELL_COUNT - 1) };
-        let y = unsafe { GetRandomValue(0, CELL_COUNT - 1) };
-        (x, y)
+    fn generate_random_pos() -> Vector2 {
+        let x = unsafe { GetRandomValue(0, CELL_COUNT - 1) as f32 };
+        let y = unsafe { GetRandomValue(0, CELL_COUNT - 1) as f32 };
+        Vector2::new(x, y)
     }
 
     pub fn new(rl: &mut RaylibHandle, rt: &RaylibThread) -> Self {
@@ -43,8 +44,8 @@ impl Food {
     pub fn draw(&self, rdh: &mut RaylibDrawHandle) {
         rdh.draw_texture(
             &self.texture,
-            self.position.0 * CELL_SIZE,
-            self.position.1 * CELL_SIZE,
+            self.position.x as i32 * CELL_SIZE,
+            self.position.y as i32 * CELL_SIZE,
             Color::WHITE,
         )
     }

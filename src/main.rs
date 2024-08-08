@@ -17,11 +17,13 @@ fn main() {
     rl.set_target_fps(60);
 
     let food = Food::new(&mut rl, &thread);
-    let snake = Snake::new();
+    let mut snake = Snake::new();
 
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(get_color(BACKGROUND_COLOR));
+
+        snake.update();
 
         food.draw(&mut d);
         snake.draw(&mut d);
