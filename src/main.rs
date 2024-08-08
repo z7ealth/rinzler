@@ -23,7 +23,9 @@ fn main() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(get_color(BACKGROUND_COLOR));
 
-        snake.update();
+        if snake.should_update() {
+            snake.update();
+        }
 
         food.draw(&mut d);
         snake.draw(&mut d);

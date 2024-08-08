@@ -1,4 +1,8 @@
-use std::{collections::VecDeque, ops::Add};
+use std::{
+    collections::VecDeque,
+    ops::{Add, Sub},
+    time::{Duration, Instant},
+};
 
 use raylib::{
     color::Color,
@@ -6,11 +10,12 @@ use raylib::{
     math::{Rectangle, Vector2},
 };
 
-use super::config::CELL_SIZE;
+use super::config::{CELL_SIZE, SNAKE_MOVEMENT_INTERVAL};
 
 pub struct Snake {
     pub body: VecDeque<Vector2>,
     direction: Vector2,
+    last_update: Instant,
 }
 
 impl Snake {
@@ -22,12 +27,28 @@ impl Snake {
                 Vector2::new(4.0, 9.0),
             ]),
             direction: Vector2::new(1.0, 0.0),
+            last_update: Instant::now(),
         }
     }
 
     pub fn update(&mut self) {
         self.body.pop_back();
-        self.body.push_front(Vector2::add(self.body[0], self.direction))
+        self.body
+            .push_front(Vector2::add(self.body[0], self.direction))
+    }
+
+    pub fn should_update(&mut self) -> bool {
+        let current_instant = Instant::now();
+        let elapsed =  current_instant.sub(self.last_update);
+        let interval = Duration::from_millis(SNAKE_MOVEMENT_INTERVAL);
+
+        if elapsed.ge(&interval) {
+            self.last_update = current_instant;
+
+            return true;
+        }
+
+        false
     }
 
     pub fn draw(&self, rdh: &mut RaylibDrawHandle) {
