@@ -26,6 +26,10 @@ impl Game {
     }
 
     pub fn check_snake_collision_with_food(&mut self) {
+
+        println!("Snake head position: {:?}", self.snake.body[0]);
+        println!("Food position: {:?}", self.food.position);
+
         if self.snake.body[0].eq(&self.food.position) {
             self.food.position = Food::generate_random_pos();
         }

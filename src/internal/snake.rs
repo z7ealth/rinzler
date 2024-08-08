@@ -9,7 +9,7 @@ use raylib::{
     color::Color,
     consts,
     drawing::{RaylibDraw, RaylibDrawHandle},
-    math::Vector2,
+    math::{Rectangle, Vector2},
     texture::{Image, Texture2D},
     RaylibHandle, RaylibThread,
 };
@@ -21,6 +21,7 @@ pub struct Snake {
     head_texture: Texture2D,
     tail_texture: Texture2D,
     direction: Vector2,
+    texture_rotation: f32,
     last_update: Instant,
 }
 
@@ -48,6 +49,8 @@ impl Snake {
         let tail_texture = RaylibHandle::load_texture_from_image(rl, thread, &tail_image)
             .expect("Unable to load Food texture");
 
+        let direction = Vector2::new(1.0, 0.0);
+
         Self {
             body: VecDeque::from([
                 Vector2::new(6.0, 9.0),
@@ -56,8 +59,19 @@ impl Snake {
             ]),
             head_texture,
             tail_texture,
-            direction: Vector2::new(1.0, 0.0),
+            texture_rotation: Self::get_texture_rotation(direction),
+            direction,
             last_update: Instant::now(),
+        }
+    }
+
+    pub fn get_texture_rotation(direction: Vector2) -> f32 {
+        match (direction.x, direction.y) {
+            (0.0, 1.0) => 0.0,    // up,
+            (0.0, -1.0) => 180.0, // down
+            (1.0, 0.0) => 90.0,   // left
+            (-1.0, 0.0) => 270.0, // right
+            _ => 0.0,
         }
     }
 
@@ -86,38 +100,55 @@ impl Snake {
         if let Some(key) = pressed_key {
             if key == consts::KeyboardKey::KEY_UP && self.direction.y != 1.0 {
                 self.direction = Vector2::new(0.0, -1.0);
+                self.texture_rotation = Self::get_texture_rotation(self.direction);
                 return;
             }
             if key == consts::KeyboardKey::KEY_DOWN && self.direction.y != -1.0 {
                 self.direction = Vector2::new(0.0, 1.0);
+                self.texture_rotation = Self::get_texture_rotation(self.direction);
+
                 return;
             }
             if key == consts::KeyboardKey::KEY_LEFT && self.direction.x != 1.0 {
                 self.direction = Vector2::new(-1.0, 0.0);
+                self.texture_rotation = Self::get_texture_rotation(self.direction);
+
                 return;
             }
             if key == consts::KeyboardKey::KEY_RIGHT && self.direction.x != -1.0 {
                 self.direction = Vector2::new(1.0, 0.0);
+                self.texture_rotation = Self::get_texture_rotation(self.direction);
             }
         }
     }
 
     pub fn draw(&self, d: &mut RaylibDrawHandle) {
         for (index, body_part) in self.body.clone().into_iter().enumerate() {
+            let rectangle = Rectangle::new(
+                body_part.x * CELL_SIZE as f32,
+                body_part.y * CELL_SIZE as f32,
+                CELL_SIZE as f32,
+                CELL_SIZE as f32,
+            );
+
             if index == 0 {
-                d.draw_texture(
+                d.draw_texture_pro(
                     &self.head_texture,
-                    body_part.x as i32 * (CELL_SIZE),
-                    body_part.y as i32 * (CELL_SIZE),
+                    rectangle,
+                    rectangle,
+                    Vector2::new(CELL_SIZE as f32, CELL_SIZE as f32),
+                    self.texture_rotation,
                     Color::WHITE,
                 );
                 continue;
             }
 
-            d.draw_texture(
+            d.draw_texture_pro(
                 &self.tail_texture,
-                body_part.x as i32 * (CELL_SIZE),
-                body_part.y as i32 * (CELL_SIZE),
+                rectangle,
+                rectangle,
+                Vector2::new(CELL_SIZE as f32, CELL_SIZE as f32),
+                self.texture_rotation,
                 Color::WHITE,
             );
         }

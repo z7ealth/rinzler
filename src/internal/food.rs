@@ -18,8 +18,8 @@ pub struct Food {
 
 impl Food {
     pub fn generate_random_pos() -> Vector2 {
-        let x = unsafe { GetRandomValue(0, CELL_COUNT - 1) as f32 };
-        let y = unsafe { GetRandomValue(0, CELL_COUNT - 1) as f32 };
+        let x = unsafe { GetRandomValue(0, CELL_COUNT) as f32 };
+        let y = unsafe { GetRandomValue(0, CELL_COUNT) as f32 };
         Vector2::new(x, y)
     }
 
