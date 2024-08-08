@@ -3,8 +3,7 @@ mod internal;
 use internal::{
     colors::{get_color, BACKGROUND_COLOR},
     config::{CELL_COUNT, CELL_SIZE},
-    food::Food,
-    snake::Snake,
+    game::Game,
 };
 use raylib::prelude::*;
 
@@ -16,22 +15,20 @@ fn main() {
 
     rl.set_target_fps(60);
 
-    let food = Food::new(&mut rl, &thread);
-    let mut snake = Snake::new();
+    let mut game = Game::new(&mut rl, &thread);
 
     while !rl.window_should_close() {
-        if snake.should_update() {
-            snake.update();
+        if game.snake.should_update() {
+            game.snake.update();
         }
 
-        snake.update_direction(&mut rl);
+        game.snake.update_direction(&mut rl);
 
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(get_color(BACKGROUND_COLOR));
-        food.draw(&mut d);
-        snake.draw(&mut d);
 
         let fps = format!("FPS: {}", d.get_fps());
         d.draw_text(&fps, CELL_SIZE * CELL_COUNT - 60, 12, 12, Color::WHITE);
+        game.draw(&mut d);
     }
 }

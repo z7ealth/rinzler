@@ -1,6 +1,7 @@
 use std::{
     collections::VecDeque,
     ops::{Add, Sub},
+    path::Path,
     time::{Duration, Instant},
 };
 
@@ -9,25 +10,39 @@ use raylib::{
     consts,
     drawing::{RaylibDraw, RaylibDrawHandle},
     math::{Rectangle, Vector2},
-    RaylibHandle,
+    texture::{Image, Texture2D},
+    RaylibHandle, RaylibThread,
 };
 
 use super::config::{CELL_SIZE, SNAKE_MOVEMENT_INTERVAL};
 
 pub struct Snake {
     pub body: VecDeque<Vector2>,
+    texture: Texture2D,
     direction: Vector2,
     last_update: Instant,
 }
 
 impl Snake {
-    pub fn new() -> Self {
+    pub fn new(rl: &mut RaylibHandle, thread: &RaylibThread) -> Self {
+        let image = Image::load_image(
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("assets/graphics/objects/snake.png")
+                .to_str()
+                .unwrap(),
+        )
+        .expect("Unable to load Food Image");
+
+        let texture = RaylibHandle::load_texture_from_image(rl, thread, &image)
+            .expect("Unable to load Food texture");
+
         Self {
             body: VecDeque::from([
                 Vector2::new(6.0, 9.0),
                 Vector2::new(5.0, 9.0),
                 Vector2::new(4.0, 9.0),
             ]),
+            texture,
             direction: Vector2::new(1.0, 0.0),
             last_update: Instant::now(),
         }
@@ -75,15 +90,25 @@ impl Snake {
     }
 
     pub fn draw(&self, d: &mut RaylibDrawHandle) {
-        for body_part in &self.body {
+        for (index, body_part) in self.body.clone().into_iter().enumerate() {
             let rectangle = Rectangle::new(
                 body_part.x * CELL_SIZE as f32,
                 body_part.y * CELL_SIZE as f32,
-                CELL_SIZE as f32,
-                CELL_SIZE as f32,
+                8.0,
+                8.0,
             );
+            if index == 0 {
+                /*d.draw_texture(
+                    &self.texture,
+                    body_part.x as i32 * (CELL_SIZE),
+                    body_part.y as i32 * (CELL_SIZE),
+                    Color::WHITE,
+                );*/
+                d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::ORANGE);
 
-            d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE)
+                continue;
+            }
+            d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE);
         }
     }
 }
