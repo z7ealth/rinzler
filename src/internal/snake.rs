@@ -9,7 +9,7 @@ use raylib::{
     color::Color,
     consts,
     drawing::{RaylibDraw, RaylibDrawHandle},
-    math::{Rectangle, Vector2},
+    math::Vector2,
     texture::{Image, Texture2D},
     RaylibHandle, RaylibThread,
 };
@@ -18,14 +18,15 @@ use super::config::{CELL_SIZE, SNAKE_MOVEMENT_INTERVAL};
 
 pub struct Snake {
     pub body: VecDeque<Vector2>,
-    texture: Texture2D,
+    head_texture: Texture2D,
+    tail_texture: Texture2D,
     direction: Vector2,
     last_update: Instant,
 }
 
 impl Snake {
     pub fn new(rl: &mut RaylibHandle, thread: &RaylibThread) -> Self {
-        let image = Image::load_image(
+        let head_image = Image::load_image(
             Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join("assets/graphics/objects/snake.png")
                 .to_str()
@@ -33,7 +34,18 @@ impl Snake {
         )
         .expect("Unable to load Food Image");
 
-        let texture = RaylibHandle::load_texture_from_image(rl, thread, &image)
+        let head_texture = RaylibHandle::load_texture_from_image(rl, thread, &head_image)
+            .expect("Unable to load Food texture");
+
+        let tail_image = Image::load_image(
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("assets/graphics/objects/snake_tail.png")
+                .to_str()
+                .unwrap(),
+        )
+        .expect("Unable to load Food Image");
+
+        let tail_texture = RaylibHandle::load_texture_from_image(rl, thread, &tail_image)
             .expect("Unable to load Food texture");
 
         Self {
@@ -42,7 +54,8 @@ impl Snake {
                 Vector2::new(5.0, 9.0),
                 Vector2::new(4.0, 9.0),
             ]),
-            texture,
+            head_texture,
+            tail_texture,
             direction: Vector2::new(1.0, 0.0),
             last_update: Instant::now(),
         }
@@ -93,22 +106,20 @@ impl Snake {
         for (index, body_part) in self.body.clone().into_iter().enumerate() {
             if index == 0 {
                 d.draw_texture(
-                    &self.texture,
+                    &self.head_texture,
                     body_part.x as i32 * (CELL_SIZE),
                     body_part.y as i32 * (CELL_SIZE),
                     Color::WHITE,
                 );
-                // d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::ORANGE);
-
                 continue;
             }
-            let rectangle = Rectangle::new(
-                body_part.x * CELL_SIZE as f32,
-                body_part.y * CELL_SIZE as f32,
-                16.0,
-                16.0,
+
+            d.draw_texture(
+                &self.tail_texture,
+                body_part.x as i32 * (CELL_SIZE),
+                body_part.y as i32 * (CELL_SIZE),
+                Color::WHITE,
             );
-            d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE);
         }
     }
 }
