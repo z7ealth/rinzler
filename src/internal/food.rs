@@ -1,21 +1,17 @@
 use std::path::Path;
 
 use raylib::{
+    color::Color,
     drawing::{RaylibDraw, RaylibDrawHandle},
     ffi::GetRandomValue,
     texture::{Image, Texture2D},
     RaylibHandle, RaylibThread,
 };
 
-use crate::internal::config::CELL_COUNT;
-
-use super::{
-    colors::{get_color, FPS_COLOR},
-    config::CELL_SIZE,
-};
+use super::config::{CELL_COUNT, CELL_SIZE};
 
 pub struct Food {
-    pub position: (i32, i32),
+    position: (i32, i32),
     texture: Texture2D,
 }
 
@@ -49,7 +45,7 @@ impl Food {
             &self.texture,
             self.position.0 * CELL_SIZE,
             self.position.1 * CELL_SIZE,
-            get_color(FPS_COLOR),
+            Color::WHITE,
         )
     }
 }
