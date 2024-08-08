@@ -23,7 +23,7 @@ impl Food {
         Vector2::new(x, y)
     }
 
-    pub fn new(rl: &mut RaylibHandle, rt: &RaylibThread) -> Self {
+    pub fn new(rl: &mut RaylibHandle, thread: &RaylibThread) -> Self {
         let image = Image::load_image(
             Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join("assets/graphics/objects/food.png")
@@ -32,7 +32,7 @@ impl Food {
         )
         .expect("Unable to load Food Image");
 
-        let texture = RaylibHandle::load_texture_from_image(rl, rt, &image)
+        let texture = RaylibHandle::load_texture_from_image(rl, thread, &image)
             .expect("Unable to load Food texture");
 
         Self {
@@ -41,8 +41,8 @@ impl Food {
         }
     }
 
-    pub fn draw(&self, rdh: &mut RaylibDrawHandle) {
-        rdh.draw_texture(
+    pub fn draw(&self, d: &mut RaylibDrawHandle) {
+        d.draw_texture(
             &self.texture,
             self.position.x as i32 * CELL_SIZE,
             self.position.y as i32 * CELL_SIZE,

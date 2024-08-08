@@ -6,8 +6,10 @@ use std::{
 
 use raylib::{
     color::Color,
+    consts,
     drawing::{RaylibDraw, RaylibDrawHandle},
     math::{Rectangle, Vector2},
+    RaylibHandle,
 };
 
 use super::config::{CELL_SIZE, SNAKE_MOVEMENT_INTERVAL};
@@ -39,7 +41,7 @@ impl Snake {
 
     pub fn should_update(&mut self) -> bool {
         let current_instant = Instant::now();
-        let elapsed =  current_instant.sub(self.last_update);
+        let elapsed = current_instant.sub(self.last_update);
         let interval = Duration::from_millis(SNAKE_MOVEMENT_INTERVAL);
 
         if elapsed.ge(&interval) {
@@ -51,7 +53,28 @@ impl Snake {
         false
     }
 
-    pub fn draw(&self, rdh: &mut RaylibDrawHandle) {
+    pub fn update_direction(&mut self, rl: &mut RaylibHandle) {
+        let pressed_key: Option<consts::KeyboardKey> = rl.get_key_pressed();
+        if let Some(key) = pressed_key {
+            if key == consts::KeyboardKey::KEY_UP && self.direction.y != 1.0 {
+                self.direction = Vector2::new(0.0, -1.0);
+                return;
+            }
+            if key == consts::KeyboardKey::KEY_DOWN && self.direction.y != -1.0 {
+                self.direction = Vector2::new(0.0, 1.0);
+                return;
+            }
+            if key == consts::KeyboardKey::KEY_LEFT && self.direction.x != 1.0 {
+                self.direction = Vector2::new(-1.0, 0.0);
+                return;
+            }
+            if key == consts::KeyboardKey::KEY_RIGHT && self.direction.x != -1.0 {
+                self.direction = Vector2::new(1.0, 0.0);
+            }
+        }
+    }
+
+    pub fn draw(&self, d: &mut RaylibDrawHandle) {
         for body_part in &self.body {
             let rectangle = Rectangle::new(
                 body_part.x * CELL_SIZE as f32,
@@ -60,7 +83,7 @@ impl Snake {
                 CELL_SIZE as f32,
             );
 
-            rdh.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE)
+            d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE)
         }
     }
 }

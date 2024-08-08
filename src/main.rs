@@ -20,13 +20,14 @@ fn main() {
     let mut snake = Snake::new();
 
     while !rl.window_should_close() {
-        let mut d = rl.begin_drawing(&thread);
-        d.clear_background(get_color(BACKGROUND_COLOR));
-
         if snake.should_update() {
             snake.update();
         }
 
+        snake.update_direction(&mut rl);
+
+        let mut d = rl.begin_drawing(&thread);
+        d.clear_background(get_color(BACKGROUND_COLOR));
         food.draw(&mut d);
         snake.draw(&mut d);
 
