@@ -23,6 +23,7 @@ pub struct Snake {
     direction: Vector2,
     texture_rotation: f32,
     last_update: Instant,
+    pub should_increase: bool,
 }
 
 impl Snake {
@@ -62,6 +63,7 @@ impl Snake {
             texture_rotation: Self::get_texture_rotation(direction),
             direction,
             last_update: Instant::now(),
+            should_increase: false,
         }
     }
 
@@ -76,9 +78,14 @@ impl Snake {
     }
 
     pub fn update(&mut self) {
-        self.body.pop_back();
         self.body
-            .push_front(Vector2::add(self.body[0], self.direction))
+            .push_front(Vector2::add(self.body[0], self.direction));
+
+        if self.should_increase {
+            self.should_increase = false;
+        } else {
+            self.body.pop_back();
+        }
     }
 
     pub fn should_update(&mut self) -> bool {
