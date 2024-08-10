@@ -124,33 +124,73 @@ impl Snake {
 
     pub fn draw(&self, d: &mut RaylibDrawHandle) {
         for (index, body_part) in self.body.clone().into_iter().enumerate() {
-            let rectangle = Rectangle::new(
-                body_part.x * CELL_SIZE as f32,
-                body_part.y * CELL_SIZE as f32,
-                CELL_SIZE as f32,
-                CELL_SIZE as f32,
-            );
-
             if index == 0 {
-                d.draw_texture_pro(
+                /*
+                d.draw_texture_v(
                     &self.head_texture,
-                    rectangle,
-                    rectangle,
-                    Vector2::new(CELL_SIZE as f32, CELL_SIZE as f32),
-                    self.texture_rotation,
+                    Vector2::new(
+                        body_part.x * CELL_SIZE as f32,
+                        body_part.y * CELL_SIZE as f32,
+                    ),
                     Color::WHITE,
                 );
+
+
+                d.draw_texture_ex(
+                    &self.head_texture,
+                    Vector2::new(
+                        body_part.x * CELL_SIZE as f32,
+                        body_part.y * CELL_SIZE as f32,
+                    ),
+                    self.texture_rotation,
+                    1.0,
+                    Color::WHITE,
+                );
+                */
+
+                let rectangle = Rectangle::new(
+                    body_part.x * CELL_SIZE as f32,
+                    body_part.y * CELL_SIZE as f32,
+                    16.0,
+                    16.0,
+                );
+                d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::ORANGE);
+
                 continue;
             }
 
-            d.draw_texture_pro(
-                &self.tail_texture,
-                rectangle,
-                rectangle,
-                Vector2::new(CELL_SIZE as f32, CELL_SIZE as f32),
-                self.texture_rotation,
-                Color::WHITE,
+            // UP X needs +1
+            // DOWN OK
+            // LEFT Y needs +1
+            // RIGHT X needs +1
+            /*
+               d.draw_texture_ex(
+                   &self.tail_texture,
+                   Vector2::new(
+                       body_part.x * CELL_SIZE as f32,
+                       body_part.y * CELL_SIZE as f32,
+                   ),
+                   self.texture_rotation,
+                   1.0,
+                   Color::WHITE,
+               );
+
+               d.draw_texture_v(
+                   &self.tail_texture,
+                   Vector2::new(
+                       body_part.x * CELL_SIZE as f32,
+                       body_part.y * CELL_SIZE as f32,
+                   ),
+                   Color::WHITE,
+               );
+            */
+            let rectangle = Rectangle::new(
+                body_part.x * CELL_SIZE as f32,
+                body_part.y * CELL_SIZE as f32,
+                16.0,
+                16.0,
             );
+            d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE);
         }
     }
 }

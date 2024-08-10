@@ -31,7 +31,7 @@ impl Game {
         println!("Food position: {:?}", self.food.position);
 
         if self.snake.body[0].eq(&self.food.position) {
-            self.food.position = Food::generate_random_pos();
+            self.food.position = Food::generate_random_pos(&self.snake.body);
         }
     }
 }

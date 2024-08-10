@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{collections::VecDeque, path::Path};
 
 use raylib::{
     color::Color,
@@ -17,10 +17,20 @@ pub struct Food {
 }
 
 impl Food {
-    pub fn generate_random_pos() -> Vector2 {
+    fn random_position() -> Vector2 {
         let x = unsafe { GetRandomValue(0, CELL_COUNT) as f32 };
         let y = unsafe { GetRandomValue(0, CELL_COUNT) as f32 };
         Vector2::new(x, y)
+    }
+
+    pub fn generate_random_pos(snake_body: &VecDeque<Vector2>) -> Vector2 {
+        let mut position = Self::random_position();
+
+        while snake_body.contains(&position) {
+            position = Self::random_position();
+        }
+
+        position
     }
 
     pub fn new(rl: &mut RaylibHandle, thread: &RaylibThread) -> Self {
@@ -36,7 +46,7 @@ impl Food {
             .expect("Unable to load Food texture");
 
         Self {
-            position: Self::generate_random_pos(),
+            position: Self::random_position(),
             texture,
         }
     }
