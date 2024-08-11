@@ -20,8 +20,8 @@ pub struct Snake {
     pub body: VecDeque<Vector2>,
     head_texture: Texture2D,
     tail_texture: Texture2D,
-    direction: Vector2,
-    texture_rotation: f32,
+    pub direction: Vector2,
+    pub texture_rotation: f32,
     last_update: Instant,
     pub should_increase: bool,
 }
@@ -101,34 +101,7 @@ impl Snake {
 
         false
     }
-
-    pub fn update_direction(&mut self, rl: &mut RaylibHandle) {
-        let pressed_key: Option<consts::KeyboardKey> = rl.get_key_pressed();
-        if let Some(key) = pressed_key {
-            if key == consts::KeyboardKey::KEY_UP && self.direction.y != 1.0 {
-                self.direction = Vector2::new(0.0, -1.0);
-                self.texture_rotation = Self::get_texture_rotation(self.direction);
-                return;
-            }
-            if key == consts::KeyboardKey::KEY_DOWN && self.direction.y != -1.0 {
-                self.direction = Vector2::new(0.0, 1.0);
-                self.texture_rotation = Self::get_texture_rotation(self.direction);
-
-                return;
-            }
-            if key == consts::KeyboardKey::KEY_LEFT && self.direction.x != 1.0 {
-                self.direction = Vector2::new(-1.0, 0.0);
-                self.texture_rotation = Self::get_texture_rotation(self.direction);
-
-                return;
-            }
-            if key == consts::KeyboardKey::KEY_RIGHT && self.direction.x != -1.0 {
-                self.direction = Vector2::new(1.0, 0.0);
-                self.texture_rotation = Self::get_texture_rotation(self.direction);
-            }
-        }
-    }
-
+ 
     pub fn draw(&self, d: &mut RaylibDrawHandle) {
         for (index, body_part) in self.body.clone().into_iter().enumerate() {
             if index == 0 {
@@ -199,5 +172,18 @@ impl Snake {
             );
             d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE);
         }
+    }
+
+    pub fn reset(&mut self) {
+        let direction = Vector2::new(1.0, 0.0);
+
+        let body = VecDeque::from([
+            Vector2::new(6.0, 9.0),
+            Vector2::new(5.0, 9.0),
+            Vector2::new(4.0, 9.0),
+        ]);
+
+        self.body = body;
+        self.direction = direction;
     }
 }

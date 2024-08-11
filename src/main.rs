@@ -22,7 +22,7 @@ fn main() {
             game.update();
         }
 
-        game.snake.update_direction(&mut rl);
+        game.update_snake_direction(&mut rl);
 
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(get_color(BACKGROUND_COLOR));
