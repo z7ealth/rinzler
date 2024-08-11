@@ -7,7 +7,6 @@ use std::{
 
 use raylib::{
     color::Color,
-    consts,
     drawing::{RaylibDraw, RaylibDrawHandle},
     math::{Rectangle, Vector2},
     texture::{Image, Texture2D},

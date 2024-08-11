@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use super::{config::CELL_COUNT, food::Food, snake::Snake};
 use raylib::{consts, drawing::RaylibDrawHandle, math::Vector2, RaylibHandle, RaylibThread};
 
@@ -29,6 +31,7 @@ impl Game {
             self.snake.update();
             self.check_snake_collision_with_food();
             self.check_snake_collision_with_edges();
+            self.check_snake_collision_with_tail();
         }
     }
 
@@ -76,6 +79,14 @@ impl Game {
             Self::game_over(self);
         }
         if self.snake.body[0].y == CELL_COUNT as f32 || self.snake.body[0].y == -1.0 {
+            Self::game_over(self);
+        }
+    }
+
+    pub fn check_snake_collision_with_tail(&mut self) {
+        let mut headless_body: VecDeque<Vector2> = self.snake.body.clone();
+        headless_body.pop_front();
+        if headless_body.contains(&self.snake.body[0]) {
             Self::game_over(self);
         }
     }

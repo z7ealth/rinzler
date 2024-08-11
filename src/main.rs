@@ -1,15 +1,18 @@
 mod internal;
 
 use internal::{
-    colors::{get_color, BACKGROUND_COLOR},
-    config::{CELL_COUNT, CELL_SIZE},
+    colors::{get_color, BACKGROUND_COLOR, BORDER_COLOR},
+    config::{CELL_COUNT, CELL_SIZE, OFFSET},
     game::Game,
 };
 use raylib::prelude::*;
 
 fn main() {
     let (mut rl, thread) = raylib::init()
-        .size(CELL_SIZE * CELL_COUNT, CELL_SIZE * CELL_COUNT)
+        .size(
+            CELL_SIZE * CELL_COUNT,
+            CELL_SIZE * CELL_COUNT,
+        )
         .title("Rinzler")
         .build();
 
@@ -29,6 +32,18 @@ fn main() {
 
         let fps = format!("FPS: {}", d.get_fps());
         d.draw_text(&fps, CELL_SIZE * CELL_COUNT - 60, 12, 12, Color::WHITE);
+
+        d.draw_rectangle_lines_ex(
+            Rectangle::new(
+                OFFSET as f32,
+                OFFSET as f32,
+                (CELL_SIZE * CELL_COUNT) as f32,
+                (CELL_SIZE * CELL_COUNT) as f32,
+            ),
+            1.0,
+            get_color(BORDER_COLOR),
+        );
+
         game.draw(&mut d);
     }
 }
