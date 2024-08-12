@@ -1,23 +1,53 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, path::Path};
 
 use super::{config::CELL_COUNT, food::Food, snake::Snake};
-use raylib::{consts, drawing::RaylibDrawHandle, math::Vector2, RaylibHandle, RaylibThread};
+use raylib::{
+    audio::{RaylibAudio, Sound},
+    consts,
+    drawing::RaylibDrawHandle,
+    math::Vector2,
+    RaylibHandle, RaylibThread,
+};
 
-pub struct Game {
+pub struct Game<'a> {
     pub snake: Snake,
     pub food: Food,
     pub running: bool,
+    pub score: u32,
+    eat_sound: Sound<'a>,
+    wall_sound: Sound<'a>,
 }
 
-impl Game {
-    pub fn new(rl: &mut RaylibHandle, thread: &RaylibThread) -> Self {
+impl<'a> Game<'a> {
+    pub fn new(rl: &mut RaylibHandle, thread: &RaylibThread, sound: &'a RaylibAudio) -> Self {
         let food = Food::new(rl, thread);
         let snake = Snake::new(rl, thread);
+
+        let eat_sound = sound
+            .new_sound(
+                Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join("assets/audio/eat.mp3")
+                    .to_str()
+                    .unwrap(),
+            )
+            .expect("Unable to load eat sound");
+
+        let wall_sound = sound
+            .new_sound(
+                Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join("assets/audio/wall.mp3")
+                    .to_str()
+                    .unwrap(),
+            )
+            .expect("Unable to load eat sound");
 
         Self {
             snake,
             food,
             running: false,
+            score: 0,
+            eat_sound,
+            wall_sound,
         }
     }
 
@@ -71,6 +101,8 @@ impl Game {
         if self.snake.body[0].eq(&self.food.position) {
             self.food.position = Food::generate_random_pos(&self.snake.body);
             self.snake.should_increase = true;
+            self.score += 10;
+            self.eat_sound.play()
         }
     }
 
@@ -94,6 +126,8 @@ impl Game {
     fn game_over(&mut self) {
         self.snake.reset();
         self.food.position = Food::generate_random_pos(&self.snake.body);
-        self.running = false
+        self.score = 0;
+        self.running = false;
+        self.wall_sound.play();
     }
 }

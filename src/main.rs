@@ -9,16 +9,15 @@ use raylib::prelude::*;
 
 fn main() {
     let (mut rl, thread) = raylib::init()
-        .size(
-            CELL_SIZE * CELL_COUNT,
-            CELL_SIZE * CELL_COUNT,
-        )
+        .size(CELL_SIZE * CELL_COUNT, CELL_SIZE * CELL_COUNT)
         .title("Rinzler")
         .build();
 
     rl.set_target_fps(60);
 
-    let mut game = Game::new(&mut rl, &thread);
+    let sound = RaylibAudio::init_audio_device().unwrap();
+
+    let mut game = Game::new(&mut rl, &thread, &sound);
 
     while !rl.window_should_close() {
         if game.snake.should_update() {
@@ -32,6 +31,9 @@ fn main() {
 
         let fps = format!("FPS: {}", d.get_fps());
         d.draw_text(&fps, CELL_SIZE * CELL_COUNT - 60, 12, 12, Color::WHITE);
+
+        let score = format!("Score: {}", game.score);
+        d.draw_text(&score, 12, 12, 12, Color::WHITE);
 
         d.draw_rectangle_lines_ex(
             Rectangle::new(
