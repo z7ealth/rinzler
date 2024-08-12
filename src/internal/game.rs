@@ -16,6 +16,8 @@ pub struct Game<'a> {
     pub score: u32,
     eat_sound: Sound<'a>,
     wall_sound: Sound<'a>,
+    motorcycle_sound: Sound<'a>,
+    pub motorcycle_running_sound: Sound<'a>,
 }
 
 impl<'a> Game<'a> {
@@ -41,6 +43,24 @@ impl<'a> Game<'a> {
             )
             .expect("Unable to load eat sound");
 
+        let motorcycle_sound = sound
+            .new_sound(
+                Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join("assets/audio/motorcycle.wav")
+                    .to_str()
+                    .unwrap(),
+            )
+            .expect("Unable to load eat sound");
+
+        let motorcycle_running_sound = sound
+            .new_sound(
+                Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join("assets/audio/motorcycle_running.wav")
+                    .to_str()
+                    .unwrap(),
+            )
+            .expect("Unable to load eat sound");
+
         Self {
             snake,
             food,
@@ -48,6 +68,8 @@ impl<'a> Game<'a> {
             score: 0,
             eat_sound,
             wall_sound,
+            motorcycle_sound,
+            motorcycle_running_sound,
         }
     }
 

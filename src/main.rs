@@ -1,9 +1,7 @@
 mod internal;
 
 use internal::{
-    colors::{get_color, BACKGROUND_COLOR, BORDER_COLOR},
-    config::{CELL_COUNT, CELL_SIZE, OFFSET},
-    game::Game,
+    colors::{get_color, BACKGROUND_COLOR, BORDER_COLOR}, config::{CELL_COUNT, CELL_SIZE, OFFSET}, game::Game
 };
 use raylib::prelude::*;
 
@@ -20,6 +18,11 @@ fn main() {
     let mut game = Game::new(&mut rl, &thread, &sound);
 
     while !rl.window_should_close() {
+
+        /*if game.running && !game.motorcycle_running_sound.is_playing() {
+            game.motorcycle_running_sound.play();
+        }*/
+
         if game.snake.should_update() {
             game.update();
         }
