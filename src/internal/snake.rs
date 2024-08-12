@@ -13,7 +13,7 @@ use raylib::{
     RaylibHandle, RaylibThread,
 };
 
-use super::config::{CELL_SIZE, SNAKE_MOVEMENT_INTERVAL};
+use super::config::{CELL_COUNT, CELL_SIZE, SNAKE_MOVEMENT_INTERVAL};
 
 pub struct Snake {
     pub body: VecDeque<Vector2>,
@@ -52,11 +52,7 @@ impl Snake {
         let direction = Vector2::new(1.0, 0.0);
 
         Self {
-            body: VecDeque::from([
-                Vector2::new(6.0, 9.0),
-                Vector2::new(5.0, 9.0),
-                Vector2::new(4.0, 9.0),
-            ]),
+            body: Self::generate_initial_pos(),
             head_texture,
             tail_texture,
             texture_rotation: Self::get_texture_rotation(direction),
@@ -74,6 +70,14 @@ impl Snake {
             (-1.0, 0.0) => 270.0, // right
             _ => 0.0,
         }
+    }
+
+    fn generate_initial_pos() -> VecDeque<Vector2> {
+        VecDeque::from([
+            Vector2::new((CELL_COUNT / 2) as f32, (CELL_COUNT - 4) as f32),
+            Vector2::new((CELL_COUNT / 2) as f32, (CELL_COUNT - 3) as f32),
+            Vector2::new((CELL_COUNT / 2) as f32, (CELL_COUNT - 2) as f32),
+        ])
     }
 
     pub fn update(&mut self) {
@@ -100,7 +104,7 @@ impl Snake {
 
         false
     }
- 
+
     pub fn draw(&self, d: &mut RaylibDrawHandle) {
         for (index, body_part) in self.body.clone().into_iter().enumerate() {
             if index == 0 {
@@ -176,11 +180,7 @@ impl Snake {
     pub fn reset(&mut self) {
         let direction = Vector2::new(1.0, 0.0);
 
-        let body = VecDeque::from([
-            Vector2::new(6.0, 9.0),
-            Vector2::new(5.0, 9.0),
-            Vector2::new(4.0, 9.0),
-        ]);
+        let body = Self::generate_initial_pos();
 
         self.body = body;
         self.direction = direction;
