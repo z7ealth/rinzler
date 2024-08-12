@@ -49,7 +49,7 @@ impl Snake {
         let tail_texture = RaylibHandle::load_texture_from_image(rl, thread, &tail_image)
             .expect("Unable to load Food texture");
 
-        let direction = Vector2::new(1.0, 0.0);
+        let direction = Vector2::new(0.0, 1.0);
 
         Self {
             body: Self::generate_initial_pos(),

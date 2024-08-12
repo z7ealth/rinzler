@@ -98,7 +98,7 @@ impl<'a> Game<'a> {
                 self.running = true;
                 return;
             }
-            if key == consts::KeyboardKey::KEY_DOWN && self.snake.direction.y != -1.0 {
+            if key == consts::KeyboardKey::KEY_DOWN && self.snake.direction.y != -1.0 && self.running {
                 self.snake.direction = Vector2::new(0.0, 1.0);
                 self.snake.texture_rotation = Snake::get_texture_rotation(self.snake.direction);
                 self.running = true;
