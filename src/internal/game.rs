@@ -16,8 +16,9 @@ pub struct Game<'a> {
     pub score: u32,
     eat_sound: Sound<'a>,
     wall_sound: Sound<'a>,
-    motorcycle_sound: Sound<'a>,
+    pub motorcycle_intro_sound: Sound<'a>,
     pub motorcycle_running_sound: Sound<'a>,
+    pub motorcycle_intro_sound_played: bool,
 }
 
 impl<'a> Game<'a> {
@@ -43,10 +44,10 @@ impl<'a> Game<'a> {
             )
             .expect("Unable to load eat sound");
 
-        let motorcycle_sound = sound
+        let motorcycle_intro_sound = sound
             .new_sound(
                 Path::new(env!("CARGO_MANIFEST_DIR"))
-                    .join("assets/audio/motorcycle.wav")
+                    .join("assets/audio/motorcycle_intro.wav")
                     .to_str()
                     .unwrap(),
             )
@@ -68,8 +69,9 @@ impl<'a> Game<'a> {
             score: 0,
             eat_sound,
             wall_sound,
-            motorcycle_sound,
+            motorcycle_intro_sound,
             motorcycle_running_sound,
+            motorcycle_intro_sound_played: false,
         }
     }
 
@@ -150,6 +152,13 @@ impl<'a> Game<'a> {
         self.food.position = Food::generate_random_pos(&self.snake.body);
         self.score = 0;
         self.running = false;
+        if self.motorcycle_intro_sound.is_playing() {
+            self.motorcycle_intro_sound.stop()
+        };
+        if self.motorcycle_running_sound.is_playing() {
+            self.motorcycle_running_sound.stop()
+        };
+        self.motorcycle_intro_sound_played = false;
         self.wall_sound.play();
     }
 }
