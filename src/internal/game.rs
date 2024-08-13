@@ -14,8 +14,8 @@ pub struct Game<'a> {
     pub food: Food,
     pub running: bool,
     pub score: u32,
-    eat_sound: Sound<'a>,
-    wall_sound: Sound<'a>,
+    pub eat_sound: Sound<'a>,
+    pub wall_sound: Sound<'a>,
     pub motorcycle_intro_sound: Sound<'a>,
     pub motorcycle_running_sound: Sound<'a>,
     pub motorcycle_intro_sound_played: bool,
@@ -29,7 +29,7 @@ impl<'a> Game<'a> {
         let eat_sound = sound
             .new_sound(
                 Path::new(env!("CARGO_MANIFEST_DIR"))
-                    .join("assets/audio/eat.mp3")
+                    .join("assets/audio/motorcycle_gets_disc.wav")
                     .to_str()
                     .unwrap(),
             )
@@ -38,7 +38,7 @@ impl<'a> Game<'a> {
         let wall_sound = sound
             .new_sound(
                 Path::new(env!("CARGO_MANIFEST_DIR"))
-                    .join("assets/audio/wall.mp3")
+                    .join("assets/audio/motorcycle_crash.wav")
                     .to_str()
                     .unwrap(),
             )
@@ -92,13 +92,18 @@ impl<'a> Game<'a> {
     pub fn update_snake_direction(&mut self, rl: &mut RaylibHandle) {
         let pressed_key: Option<consts::KeyboardKey> = rl.get_key_pressed();
         if let Some(key) = pressed_key {
-            if key == consts::KeyboardKey::KEY_UP && self.snake.direction.y != 1.0 {
+            if key == consts::KeyboardKey::KEY_UP && self.snake.direction.y != 1.0
+                || !(key != consts::KeyboardKey::KEY_UP || self.running)
+            {
                 self.snake.direction = Vector2::new(0.0, -1.0);
                 self.snake.texture_rotation = Snake::get_texture_rotation(self.snake.direction);
                 self.running = true;
                 return;
             }
-            if key == consts::KeyboardKey::KEY_DOWN && self.snake.direction.y != -1.0 && self.running {
+            if key == consts::KeyboardKey::KEY_DOWN
+                && self.snake.direction.y != -1.0
+                && self.running
+            {
                 self.snake.direction = Vector2::new(0.0, 1.0);
                 self.snake.texture_rotation = Snake::get_texture_rotation(self.snake.direction);
                 self.running = true;

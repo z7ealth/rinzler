@@ -173,12 +173,12 @@ impl Snake {
                 16.0,
                 16.0,
             );
-            d.draw_rectangle_rounded(rectangle, 0.5, 6, Color::WHITE);
+            d.draw_rectangle_rounded(rectangle, 0.8, 6, Color::WHITE);
         }
     }
 
     pub fn reset(&mut self) {
-        let direction = Vector2::new(1.0, 0.0);
+        let direction = Vector2::new(0.0, 1.0);
 
         let body = Self::generate_initial_pos();
 

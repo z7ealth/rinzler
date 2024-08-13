@@ -18,7 +18,8 @@ fn main() {
     let sound = RaylibAudio::init_audio_device().unwrap();
 
     let mut game = Game::new(&mut rl, &thread, &sound);
-
+    game.wall_sound.set_volume(0.1);
+    game.eat_sound.set_volume(0.1);
     game.motorcycle_intro_sound.set_volume(0.1);
     game.motorcycle_running_sound.set_volume(0.1);
 
